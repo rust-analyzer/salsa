@@ -108,8 +108,8 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
 
             // Extract keys.
             let mut iter = method.sig.inputs.iter();
-            match iter.next() {
-                Some(FnArg::Receiver(sr)) if sr.mutability.is_none() => (),
+            let self_receiver = match iter.next() {
+                Some(FnArg::Receiver(sr)) if sr.mutability.is_none() => sr,
                 _ => {
                     return Error::new(
                         sig_span,
@@ -118,7 +118,7 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
                     .to_compile_error()
                     .into();
                 }
-            }
+            };
             let mut keys: Vec<(Ident, Type)> = vec![];
             for (idx, arg) in iter.enumerate() {
                 match arg {
@@ -173,6 +173,7 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
                     query_type: lookup_query_type,
                     query_name: format!("{}", lookup_fn_name),
                     fn_name: lookup_fn_name,
+                    receiver: self_receiver.clone(),
                     attrs: vec![], // FIXME -- some automatically generated docs on this method?
                     storage: QueryStorage::InternedLookup {
                         intern_query_type: query_type.clone(),
@@ -190,6 +191,7 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
                 query_type,
                 query_name,
                 fn_name: method.sig.ident,
+                receiver: self_receiver.clone(),
                 attrs,
                 storage,
                 keys,
@@ -215,10 +217,11 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
         let fn_name = &query.fn_name;
         let qt = &query.query_type;
         let attrs = &query.attrs;
+        let self_receiver = &query.receiver;
 
         query_fn_declarations.extend(quote! {
             #(#attrs)*
-            fn #fn_name(&self, #(#key_names: #keys),*) -> #value;
+            fn #fn_name(#self_receiver, #(#key_names: #keys),*) -> #value;
         });
 
         // Special case: transparent queries don't create actual storage,
@@ -269,8 +272,10 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
 
             let set_constant_fn_docs = format!(
                 "
-                Set the value of the `{fn_name}` input and promise
-                that its value will never change again.
+                Set the value of the `{fn_name}` input with a
+                specific durability instead of the default of
+                `Durability::LOW`. You can use `Durability::MAX`
+                to promise that its value will never change again.
 
                 See `{fn_name}` for details.
 
@@ -688,6 +693,7 @@ fn filter_attrs(attrs: Vec<Attribute>) -> (Vec<Attribute>, Vec<SalsaAttr>) {
 #[derive(Debug)]
 struct Query {
     fn_name: Ident,
+    receiver: syn::Receiver,
     query_name: String,
     attrs: Vec<syn::Attribute>,
     query_type: Ident,
