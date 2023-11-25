@@ -58,7 +58,7 @@ impl InternId {
 
     /// Creates a new InternId. Unsafe as `value` must be less than `MAX`
     /// and this is not checked in release builds.
-    unsafe fn new_unchecked(value: u32) -> Self {
+    pub const unsafe fn new_unchecked(value: u32) -> Self {
         debug_assert!(value < InternId::MAX);
         InternId {
             value: NonZeroU32::new_unchecked(value + 1),
