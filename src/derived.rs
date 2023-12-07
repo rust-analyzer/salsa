@@ -21,9 +21,6 @@ mod maybe_changed_after;
 mod memo;
 mod sync;
 
-//mod slot;
-//use slot::Slot;
-
 /// Memoized queries store the result plus a list of the other queries
 /// that they invoked. This means we can avoid recomputing them when
 /// none of those inputs have changed.
