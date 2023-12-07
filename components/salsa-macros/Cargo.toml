@@ -1,6 +1,6 @@
 [package]
 name = "rust-analyzer-salsa-macros"
-version = "0.17.0-pre.3"
+version = "0.17.0-pre.4"
 authors = ["Salsa developers"]
 edition = "2018"
 license = "Apache-2.0 OR MIT"
