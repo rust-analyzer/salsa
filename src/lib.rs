@@ -466,12 +466,7 @@ pub trait Query: Debug + Default + Sized + for<'d> QueryDb<'d> {
     /// Extact storage for this query from the storage for its group.
     fn query_storage<'a>(
         group_storage: &'a <Self as QueryDb<'_>>::GroupStorage,
-    ) -> &'a Arc<Self::Storage>;
-
-    /// Extact storage for this query from the storage for its group.
-    fn query_storage_mut<'a>(
-        group_storage: &'a <Self as QueryDb<'_>>::GroupStorage,
-    ) -> &'a Arc<Self::Storage>;
+    ) -> &'a Self::Storage;
 }
 
 /// Return value from [the `query` method] on `Database`.

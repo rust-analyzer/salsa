@@ -166,9 +166,8 @@ where
             })
         };
 
-        let (slot, index);
-        index = InternId::from(tables.values.len());
-        slot = create_slot(index);
+        let index = InternId::from(tables.values.len());
+        let slot = create_slot(index);
         tables.values.push(slot.clone());
         entry.insert(index);
 
@@ -347,7 +346,7 @@ where
         let group_storage =
             <<Q as QueryDb<'_>>::DynDb as HasQueryGroup<Q::Group>>::group_storage(db);
         let interned_storage = IQ::query_storage(Q::convert_group_storage(group_storage));
-        let slot = interned_storage.lookup_value(index);
+        let slot: Arc<Slot<<Q as Query>::Value>> = interned_storage.lookup_value(index);
         let value = slot.value.clone();
         let interned_at = slot.interned_at;
         db.salsa_runtime()

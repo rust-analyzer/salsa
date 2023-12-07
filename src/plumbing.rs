@@ -125,8 +125,8 @@ where
     Q: Query,
 {
     let (group_storage, runtime) = HasQueryGroup::group_storage_mut(db);
-    let query_storage = Q::query_storage_mut(group_storage);
-    QueryTableMut::new(runtime, &**query_storage)
+    let query_storage = Q::query_storage(group_storage);
+    QueryTableMut::new(runtime, query_storage)
 }
 
 pub trait QueryGroup: Sized {

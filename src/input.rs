@@ -209,7 +209,7 @@ where
             // (Otherwise, someone else might write a *newer* revision
             // into the same cell while we block on the lock.)
             let stamped_value = StampedValue {
-                value: value,
+                value,
                 durability,
                 changed_at: next_revision,
             };
