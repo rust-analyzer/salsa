@@ -313,10 +313,8 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
         }
 
         // A field for the storage struct
-        //
-        // FIXME(#120): the pub should not be necessary once we complete the transition
         storage_fields.extend(quote! {
-            pub #fn_name: std::sync::Arc<<#qt as salsa::Query>::Storage>,
+            #fn_name: std::sync::Arc<<#qt as salsa::Query>::Storage>,
         });
     }
 
@@ -398,9 +396,7 @@ pub(crate) fn query_group(args: TokenStream, input: TokenStream) -> TokenStream 
         output.extend(quote! {
             impl #qt {
                 /// Get access to extra methods pertaining to this query.
-                /// You can also use it to invoke this query, though
-                /// it's more common to use the trait method on the database
-                /// itself.
+                /// You can also use it to invoke this query.
                 #trait_vis fn in_db(self, db: &#dyn_db) -> salsa::QueryTable<'_, Self>
                 {
                     salsa::plumbing::get_query_table::<#qt>(db)
