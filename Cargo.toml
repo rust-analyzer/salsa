@@ -13,8 +13,8 @@ name = "salsa"
 [dependencies]
 arc-swap = "1.4.0"
 crossbeam-utils = { version = "0.8", default-features = false }
-dashmap = "4.0.2"
-hashlink = "0.7.0"
+dashmap = "5.5.3"
+hashlink = "0.8.4"
 indexmap = "2.1.0"
 lock_api = "0.4"
 log = "0.4.5"
