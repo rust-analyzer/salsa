@@ -9,7 +9,7 @@ use parking_lot::{Mutex, RwLock};
 use std::hash::Hash;
 use std::panic::panic_any;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
+use triomphe::Arc;
 
 mod dependency_graph;
 use dependency_graph::DependencyGraph;

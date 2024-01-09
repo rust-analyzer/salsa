@@ -15,7 +15,7 @@ use std::borrow::Borrow;
 use std::convert::TryFrom;
 use std::hash::Hash;
 use std::marker::PhantomData;
-use std::sync::Arc;
+use triomphe::Arc;
 
 mod slot;
 use slot::Slot;

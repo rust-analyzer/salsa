@@ -15,7 +15,7 @@ use indexmap::map::Entry;
 use log::debug;
 use parking_lot::RwLock;
 use std::convert::TryFrom;
-use std::sync::Arc;
+use triomphe::Arc;
 
 /// Input queries store the result plus a list of the other queries
 /// that they invoked. This means we can avoid recomputing them when

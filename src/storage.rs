@@ -1,5 +1,5 @@
 use crate::{plumbing::DatabaseStorageTypes, Runtime};
-use std::sync::Arc;
+use triomphe::Arc;
 
 /// Stores the cached results and dependency information for all the queries
 /// defined on your salsa database. Also embeds a [`Runtime`] which is used to

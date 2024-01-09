@@ -38,7 +38,6 @@ use std::fmt::{self, Debug};
 use std::hash::Hash;
 use std::panic::AssertUnwindSafe;
 use std::panic::{self, UnwindSafe};
-use std::sync::Arc;
 
 pub use crate::durability::Durability;
 pub use crate::intern_id::InternId;
@@ -467,12 +466,12 @@ pub trait Query: Debug + Default + Sized + for<'d> QueryDb<'d> {
     /// Extact storage for this query from the storage for its group.
     fn query_storage<'a>(
         group_storage: &'a <Self as QueryDb<'_>>::GroupStorage,
-    ) -> &'a Arc<Self::Storage>;
+    ) -> &'a std::sync::Arc<Self::Storage>;
 
     /// Extact storage for this query from the storage for its group.
     fn query_storage_mut<'a>(
         group_storage: &'a <Self as QueryDb<'_>>::GroupStorage,
-    ) -> &'a Arc<Self::Storage>;
+    ) -> &'a std::sync::Arc<Self::Storage>;
 }
 
 /// Return value from [the `query` method] on `Database`.
@@ -679,7 +678,7 @@ impl Cycle {
 
     /// True if two `Cycle` values represent the same cycle.
     pub(crate) fn is(&self, cycle: &Cycle) -> bool {
-        Arc::ptr_eq(&self.participants, &cycle.participants)
+        triomphe::Arc::ptr_eq(&self.participants, &cycle.participants)
     }
 
     pub(crate) fn throw(self) -> ! {

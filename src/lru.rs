@@ -3,7 +3,7 @@ use parking_lot::Mutex;
 use std::fmt::Debug;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
-use std::sync::Arc;
+use triomphe::Arc;
 
 /// A simple and approximate concurrent lru list.
 ///

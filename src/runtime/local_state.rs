@@ -6,7 +6,7 @@ use crate::runtime::Revision;
 use crate::Cycle;
 use crate::DatabaseKeyIndex;
 use std::cell::RefCell;
-use std::sync::Arc;
+use triomphe::Arc;
 
 /// State that is specific to a single execution thread.
 ///

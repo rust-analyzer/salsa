@@ -10,7 +10,7 @@ use crate::QueryTableMut;
 use std::borrow::Borrow;
 use std::fmt::Debug;
 use std::hash::Hash;
-use std::sync::Arc;
+use triomphe::Arc;
 
 pub use crate::derived::DependencyStorage;
 pub use crate::derived::MemoizedStorage;

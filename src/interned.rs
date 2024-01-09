@@ -14,7 +14,7 @@ use std::collections::hash_map::Entry;
 use std::convert::From;
 use std::fmt::Debug;
 use std::hash::Hash;
-use std::sync::Arc;
+use triomphe::Arc;
 
 const INTERN_DURABILITY: Durability = Durability::HIGH;
 
