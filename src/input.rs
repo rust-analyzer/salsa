@@ -31,7 +31,6 @@ struct Slot<Q>
 where
     Q: Query,
 {
-    key: Q::Key,
     database_key_index: DatabaseKeyIndex,
     stamped_value: RwLock<StampedValue<Q::Value>>,
 }
@@ -121,12 +120,9 @@ where
     {
         let slots = self.slots.read();
         slots
-            .values()
-            .map(|slot| {
-                TableEntry::new(
-                    slot.key.clone(),
-                    Some(slot.stamped_value.read().value.clone()),
-                )
+            .iter()
+            .map(|(key, slot)| {
+                TableEntry::new(key.clone(), Some(slot.stamped_value.read().value.clone()))
             })
             .collect()
     }
@@ -216,7 +212,6 @@ where
                         key_index,
                     };
                     entry.insert(Slot {
-                        key: key.clone(),
                         database_key_index,
                         stamped_value: RwLock::new(stamped_value),
                     });
@@ -260,6 +255,6 @@ where
     Q: Query,
 {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(fmt, "{:?}({:?})", Q::default(), self.key)
+        write!(fmt, "{:?}", Q::default())
     }
 }
