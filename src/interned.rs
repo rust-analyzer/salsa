@@ -14,7 +14,7 @@ use std::collections::hash_map::Entry;
 use std::convert::From;
 use std::fmt::Debug;
 use std::hash::Hash;
-use std::sync::Arc;
+use triomphe::Arc;
 
 const INTERN_DURABILITY: Durability = Durability::HIGH;
 
@@ -70,10 +70,6 @@ impl InternKey for InternId {
 
 #[derive(Debug)]
 struct Slot<K> {
-    /// Index of this slot in the list of interned values;
-    /// set to None if gc'd.
-    index: InternId,
-
     /// DatabaseKeyIndex for this slot.
     database_key_index: DatabaseKeyIndex,
 
@@ -97,9 +93,9 @@ where
 
 impl<K: Debug + Hash + Eq> InternTables<K> {
     /// Returns the slot for the given key.
-    fn slot_for_key(&self, key: &K) -> Option<Arc<Slot<K>>> {
-        let index = self.map.get(key)?;
-        Some(self.slot_for_index(*index))
+    fn slot_for_key(&self, key: &K) -> Option<(Arc<Slot<K>>, InternId)> {
+        let &index = self.map.get(key)?;
+        Some((self.slot_for_index(index), index))
     }
 
     /// Returns the slot at the given index.
@@ -128,7 +124,11 @@ where
     Q::Value: InternKey,
 {
     /// If `key` has already been interned, returns its slot. Otherwise, creates a new slot.
-    fn intern_index(&self, db: &<Q as QueryDb<'_>>::DynDb, key: &Q::Key) -> Arc<Slot<Q::Key>> {
+    fn intern_index(
+        &self,
+        db: &<Q as QueryDb<'_>>::DynDb,
+        key: &Q::Key,
+    ) -> (Arc<Slot<Q::Key>>, InternId) {
         if let Some(i) = self.intern_check(key) {
             return i;
         }
@@ -149,7 +149,7 @@ where
                 let index = *entry.get();
                 let slot = &tables.values[index.as_usize()];
                 debug_assert_eq!(owned_key2, slot.value);
-                return slot.clone();
+                return (slot.clone(), index);
             }
         };
 
@@ -160,7 +160,6 @@ where
                 key_index: index.as_u32(),
             };
             Arc::new(Slot {
-                index,
                 database_key_index,
                 value: owned_key2,
                 interned_at: revision_now,
@@ -173,10 +172,10 @@ where
         tables.values.push(slot.clone());
         entry.insert(index);
 
-        slot
+        (slot, index)
     }
 
-    fn intern_check(&self, key: &Q::Key) -> Option<Arc<Slot<Q::Key>>> {
+    fn intern_check(&self, key: &Q::Key) -> Option<(Arc<Slot<Q::Key>>, InternId)> {
         self.tables.read().slot_for_key(key)
     }
 
@@ -230,9 +229,8 @@ where
 
     fn fetch(&self, db: &<Q as QueryDb<'_>>::DynDb, key: &Q::Key) -> Q::Value {
         db.unwind_if_cancelled();
-        let slot = self.intern_index(db, key);
+        let (slot, index) = self.intern_index(db, key);
         let changed_at = slot.interned_at;
-        let index = slot.index;
         db.salsa_runtime()
             .report_query_read_and_unwind_if_cycle_resulted(
                 slot.database_key_index,

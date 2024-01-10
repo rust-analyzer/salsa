@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use triomphe::Arc;
 
 use crate::{DatabaseKeyIndex, RuntimeId};
 use parking_lot::{Condvar, MutexGuard};

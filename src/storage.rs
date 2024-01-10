@@ -1,5 +1,5 @@
 use crate::{plumbing::DatabaseStorageTypes, Runtime};
-use std::sync::Arc;
+use triomphe::Arc;
 
 /// Stores the cached results and dependency information for all the queries
 /// defined on your salsa database. Also embeds a [`Runtime`] which is used to
@@ -34,6 +34,12 @@ impl<DB: DatabaseStorageTypes> Storage<DB> {
     /// users.
     pub fn query_store(&self) -> &DB::DatabaseStorage {
         &self.query_store
+    }
+
+    /// Access the query storage tables. Not meant to be used directly by end
+    /// users.
+    pub fn query_store_mut(&mut self) -> (&DB::DatabaseStorage, &mut Runtime) {
+        (&self.query_store, &mut self.runtime)
     }
 
     /// Returns a "snapshotted" storage, suitable for use in a forked database.

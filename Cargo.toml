@@ -1,6 +1,6 @@
 [package]
 name = "rust-analyzer-salsa"
-version = "0.17.0-pre.4" # CHECK salsa-macros version
+version = "0.17.0-pre.5" # CHECK salsa-macros version
 authors = ["Salsa developers"]
 edition = "2018"
 license = "Apache-2.0 OR MIT"
@@ -18,8 +18,9 @@ parking_lot = "0.12.1"
 rustc-hash = "1.0"
 smallvec = "1.0.0"
 oorandom = "11"
+triomphe = "0.1.11"
 
-rust-analyzer-salsa-macros = { version = "0.17.0-pre.2", path = "components/salsa-macros" }
+rust-analyzer-salsa-macros = { version = "0.17.0-pre.5", path = "components/salsa-macros" }
 
 [dev-dependencies]
 diff = "0.1.0"
@@ -27,7 +28,7 @@ env_logger = "0.7"
 linked-hash-map = "0.5.2"
 rand = "0.7"
 rand_distr = "0.2.1"
-test-env-log = "0.2.7"
+test-log = "0.2.7"
 insta = "1.8.0"
 
 [workspace]
