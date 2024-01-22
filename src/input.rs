@@ -12,9 +12,9 @@ use crate::Query;
 use crate::Runtime;
 use crate::{DatabaseKeyIndex, QueryDb};
 use indexmap::map::Entry;
-use log::debug;
 use parking_lot::RwLock;
 use std::convert::TryFrom;
+use tracing::debug;
 
 /// Input queries store the result plus a list of the other queries
 /// that they invoked. This means we can avoid recomputing them when
@@ -160,7 +160,7 @@ where
     Q: Query,
 {
     fn set(&self, runtime: &mut Runtime, key: &Q::Key, value: Q::Value, durability: Durability) {
-        log::debug!(
+        tracing::debug!(
             "{:?}({:?}) = {:?} ({:?})",
             Q::default(),
             key,

@@ -79,7 +79,7 @@ pub trait Database: plumbing::DatabaseOps {
 
         let current_revision = runtime.current_revision();
         let pending_revision = runtime.pending_revision();
-        log::debug!(
+        tracing::debug!(
             "unwind_if_cancelled: current_revision={:?}, pending_revision={:?}",
             current_revision,
             pending_revision
@@ -682,7 +682,7 @@ impl Cycle {
     }
 
     pub(crate) fn throw(self) -> ! {
-        log::debug!("throwing cycle {:?}", self);
+        tracing::debug!("throwing cycle {:?}", self);
         std::panic::resume_unwind(Box::new(self))
     }
 
