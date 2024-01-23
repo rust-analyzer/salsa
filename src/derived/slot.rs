@@ -14,11 +14,11 @@ use crate::runtime::StampedValue;
 use crate::runtime::WaitResult;
 use crate::Cycle;
 use crate::{Database, DatabaseKeyIndex, Event, EventKind, QueryDb};
-use log::{debug, info};
 use parking_lot::{RawRwLock, RwLock};
 use std::marker::PhantomData;
 use std::ops::Deref;
 use std::sync::atomic::{AtomicBool, Ordering};
+use tracing::{debug, info};
 
 pub(super) struct Slot<Q, MP>
 where
@@ -228,7 +228,7 @@ where
         panic_guard: PanicGuard<'_, Q, MP>,
         old_memo: Option<Memo<Q::Value>>,
     ) -> StampedValue<Q::Value> {
-        log::info!("{:?}: executing query", self.database_key_index.debug(db));
+        tracing::info!("{:?}: executing query", self.database_key_index.debug(db));
 
         db.salsa_event(Event {
             runtime_id: db.salsa_runtime().id(),
@@ -242,7 +242,7 @@ where
         let value = match Cycle::catch(|| Q::execute(db, self.key.clone())) {
             Ok(v) => v,
             Err(cycle) => {
-                log::debug!(
+                tracing::debug!(
                     "{:?}: caught cycle {:?}, have strategy {:?}",
                     self.database_key_index.debug(db),
                     cycle,
@@ -441,7 +441,7 @@ where
     }
 
     pub(super) fn invalidate(&self, new_revision: Revision) -> Option<Durability> {
-        log::debug!("Slot::invalidate(new_revision = {:?})", new_revision);
+        tracing::debug!("Slot::invalidate(new_revision = {:?})", new_revision);
         match &mut *self.state.write() {
             QueryState::Memoized(memo) => {
                 memo.revisions.inputs = QueryInputs::Untracked;

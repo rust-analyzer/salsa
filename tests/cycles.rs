@@ -298,7 +298,7 @@ fn cycle_appears() {
     //     ^     |
     //     +-----+
     db.set_b_invokes(CycleQuery::A);
-    log::debug!("Set Cycle Leaf");
+    tracing::debug!("Set Cycle Leaf");
     assert!(db.cycle_a().is_err());
 }
 

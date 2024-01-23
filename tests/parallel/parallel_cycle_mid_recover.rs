@@ -64,12 +64,12 @@ pub(crate) trait TestDatabase: Knobs {
 }
 
 fn recover_b1(_db: &dyn TestDatabase, _cycle: &salsa::Cycle, key: &i32) -> i32 {
-    log::debug!("recover_b1");
+    tracing::debug!("recover_b1");
     key * 20 + 2
 }
 
 fn recover_b3(_db: &dyn TestDatabase, _cycle: &salsa::Cycle, key: &i32) -> i32 {
-    log::debug!("recover_b1");
+    tracing::debug!("recover_b1");
     key * 200 + 2
 }
 

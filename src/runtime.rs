@@ -3,12 +3,12 @@ use crate::hash::FxIndexSet;
 use crate::plumbing::CycleRecoveryStrategy;
 use crate::revision::{AtomicRevision, Revision};
 use crate::{Cancelled, Cycle, Database, DatabaseKeyIndex, Event, EventKind};
-use log::debug;
 use parking_lot::lock_api::{RawRwLock, RawRwLockRecursive};
 use parking_lot::{Mutex, RwLock};
 use std::hash::Hash;
 use std::panic::panic_any;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use tracing::debug;
 use triomphe::Arc;
 
 mod dependency_graph;
@@ -178,7 +178,7 @@ impl Runtime {
     where
         F: FnOnce(Revision) -> Option<Durability>,
     {
-        log::debug!("increment_revision()");
+        tracing::debug!("increment_revision()");
 
         if !self.permits_increment() {
             panic!("increment_revision invoked during a query computation");

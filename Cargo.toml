@@ -13,7 +13,7 @@ name = "salsa"
 [dependencies]
 indexmap = "2.1.0"
 lock_api = "0.4"
-log = "0.4.5"
+tracing = "0.1"
 parking_lot = "0.12.1"
 rustc-hash = "1.0"
 smallvec = "1.0.0"
@@ -24,7 +24,6 @@ rust-analyzer-salsa-macros = { version = "0.17.0-pre.5", path = "components/sals
 
 [dev-dependencies]
 diff = "0.1.0"
-env_logger = "0.7"
 linked-hash-map = "0.5.2"
 rand = "0.7"
 rand_distr = "0.2.1"

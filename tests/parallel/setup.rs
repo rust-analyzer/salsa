@@ -122,7 +122,7 @@ fn sum(db: &dyn ParDatabase, key: &'static str) -> usize {
     match db.knobs().sum_wait_for_cancellation.get() {
         CancellationFlag::Down => (),
         CancellationFlag::Panic => {
-            log::debug!("waiting for cancellation");
+            tracing::debug!("waiting for cancellation");
             loop {
                 db.unwind_if_cancelled();
                 std::thread::yield_now();
